@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			width: 800px;
+			margin: 0 auto;
+		}
+		#tag{
+			margin: 10px auto;
+		}
+		#tagContent{
+			margin: 10px auto;
+		}
+		#tagContent span{
+			display: inline-block;
+			animation: fadein 1s;
+			height: 150px;
+			width: 150px;
+			border-radius: 75px;
+			margin: 1px;
+			color: LemonChiffon;
+			background-color: CornflowerBlue;
+			text-align: center;
+			line-height: 150px
+		}
+		#tagContent .current{
+			background-color: red;
+		}
+		textarea{
+			clear: both;
+   			overflow: hidden;
+		}
+		#hobbyContent span{
+			display: inline-block;
+			animation: fadein 1s;
+			height: 150px;
+			width: 150px;
+			border-radius: 75px;
+			margin: 1px;
+			color: LemonChiffon;
+			background-color: CornflowerBlue;
+			text-align: center;
+			line-height: 150px
+		}
+		#hobbyContent .current{
+			background-color: red;
+		}
+	</style>
+</head>
+<body>
+	<div id="tag">
+		<span>Tag:</span>
+		<input type="text" id="inputTag" placeholder="请输入tag">
+	</div>
+	<div id="tagContent"></div>
+	<div id="hobby">
+		<form action="">
+			<textarea type="text" id="inputHobby" rows="5" cols="20"></textarea>
+		</form>
+		<button id="btn_hobby">确认兴趣爱好</button>
+	</div>
+	<div id="hobbyContent"></div>
+	<script type="text/javascript" src="task20.js"></script>
+</body>
+</html>
