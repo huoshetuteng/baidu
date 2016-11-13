@@ -54,21 +54,21 @@
 <p>现有并列的三列布局结构，从左至右依次为 A, B, C, 宽度分别为180px, 600px, 180px。要求在不改变 Html 结构的情况下用CSS实现：ABC，CBA，BAC 三种布局及在CBA排列下使B宽度自适应（三列总宽度100%），不能使用针对浏览器的CSS Hack.</p>
 </div>
 <script type="text/javascript">
-	// foo = function(){
-	// 	this.myName = "Foo function.";
-	// };
-	// foo.prototype.sayHello = function(){
-	// 	alert(this.myName);
-	// };
-	// foo.prototype.bar = function(){
-	// 	setTimeout(this.sayHello, 1000);
-    // setTimeout(this.sayHello.bind(this), 1000);
-//setTimeout(this.sayHello.call(this), 1000);
-//setTimeout(this.sayHello.apply(this), 1000);
-    // this.sayHello();//添加一个双括号，让其直接调用并执行prototype内的sayHello函数，而不是函数引用
-// };
-// var f = new foo;
-// f.bar();
+	foo = function(){
+		this.myName = "Foo function.";
+	};
+	foo.prototype.sayHello = function(){
+		alert(this.myName);
+	};
+	foo.prototype.bar = function(){
+		setTimeout(this.sayHello, 1000);
+    setTimeout(this.sayHello.bind(this), 1000);
+setTimeout(this.sayHello.call(this), 1000);
+setTimeout(this.sayHello.apply(this), 1000);
+    this.sayHello();//添加一个双括号，让其直接调用并执行prototype内的sayHello函数，而不是函数引用
+};
+var f = new foo;
+f.bar();
 function add(a,b)  
 {  
     alert(a+b);  
