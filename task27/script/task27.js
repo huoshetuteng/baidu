@@ -21,6 +21,24 @@ function log(message, colour) {
     consoleText.scrollTop = consoleText.scrollHeight;
 }
 /**
+ * 常量：动能系统型号
+ * @type {*[]}
+ */
+var driverModel = [
+    {model: '前进号', speed: 3, consume: 5},
+    {model: '奔腾号', speed: 5, consume: 7},
+    {model: '超越号', speed: 8, consume: 9}
+];
+/**
+ * 常量：能源系统型号
+ * @type {*[]}
+ */
+var energyModel = [
+    {model: '劲量型', rate: 2},
+    {model: '光能型', rate: 3},
+    {model: '永久型', rate: 4}
+];
+/**
  * 飞船类
  * @param {number} orbitId 所在轨道
  */
@@ -35,7 +53,7 @@ var STOP = 0;
  */
 var START = 1;
 
-function SpaceShip(orbitId) {
+function SpaceShip(orbitId,drive,rate) {
     var obj = {
         //所在轨道
         _orbit: orbitId,
@@ -45,14 +63,14 @@ function SpaceShip(orbitId) {
         _energy: 100,
         //能源是否充满
         _energyStatus: true,
-        //能源补充速度
-        _rate: 2,
+        //速度
+        _speed: driverModel[drive].speed,
         //能源消耗速度
-        _decrease: 1,
+        _consume: driverModel[drive].consume,
+        //能源补充速度
+        _rate: energyModel[rate].rate,
         //已经销毁
         _destroyed: false,
-        //速度
-        _speed: 3,
         //所在位置（旋转角度)
         _angle: 0,
         //动力系统
@@ -78,31 +96,29 @@ function SpaceShip(orbitId) {
         //能源系统
         energy: {
             add: function() {
-                obj._energy += obj._decrease;
+                obj._energy += obj._rate;
+                console.log(obj._rate)
+                console.log(obj._energy)
                 if (obj._energy >= 100) {
                     obj._energy = 100;
-                    obj._energy_status = true;
+                    obj._energyStatus = true;
                 }
             },
             consume: function() {
                 if (obj._status == START) {
-                    obj._energy -= obj._decrease;
+                    obj._energy -= obj._consume;
                 }
                 if (obj._energy <= 0) {
                     obj._status = STOP;
                     obj._energy = 0;
-                    obj._energy_status = false;
+                    obj._energyStatus = false;
                 }
+                
             },
             //获取当前能源值
             get: function() {
                 return obj._energy;
             }
-        },
-        //飞行速度和能源补充速度初始化
-        init: function(arr) {
-            this._speed = parseInt(arr[0]);
-            this._rate = parseInt(arr[1]);
         },
         //立即销毁自身
         destroy: function() {
@@ -124,10 +140,9 @@ var spaceManager = {
      * 创建宇宙飞船
      * @param orbitId 轨道ID
      */
-    createSpaceShip: function(orbitId, arr) {
+    createSpaceShip: function(orbitId,drive,rate) {
         //创建飞船对象并保存到数组
-        var obj = new SpaceShip(orbitId);
-        obj.init(arr);
+        var obj = new SpaceShip(orbitId,drive,rate);
         spaceManager.spaceShipList.push(obj);
         // var shipId = spaceManager.spaceShipList.length-1;
         //创建飞船主体div
@@ -251,7 +266,7 @@ function getRadioValue(radionObj) {
     var str = [];
     for (var i = 0; i < radionObj.length; i++) {
         if (radionObj[i].checked) {
-            str.push(radionObj[i].value);
+            str.push(parseInt(radionObj[i].value));
         }
     }
     return str;
@@ -259,8 +274,9 @@ function getRadioValue(radionObj) {
 //添加点击事件
 var create = $("#create");
 create.addEventListener("click", function() {
-    var obj = document.getElementsByTagName("input");
-    var arrValue = getRadioValue(obj);
+    var input = document.getElementsByTagName("input");
+    //选中的飞船参数的值
+    var val = getRadioValue(input);
     var orbit;
     if (!$("#control0")) {
         orbit = 0;
@@ -273,8 +289,7 @@ create.addEventListener("click", function() {
     } else {
         return;
     }
-    spaceManager.createSpaceShip(orbit, arrValue);
-    console.log(spaceManager.spaceShipList)
+    spaceManager.createSpaceShip(orbit, val[0],val[1]);
 }, false);
 
 /**
@@ -298,7 +313,7 @@ create.addEventListener("click", function() {
         start[0] = e.clientX - position[0];
         start[1] = e.clientY - position[1];
         draggingControl = true;
-        console.log(e.clientX,e.clientY)
+        // console.log(e.clientX,e.clientY)
     });
     addEventListener("mouseup", function() { //鼠标抬起事件
         draggingControl = false;
