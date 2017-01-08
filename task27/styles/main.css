@@ -169,8 +169,8 @@ html, body {
     right: 0;
 }
 
-/** 控制台标题和操作面板标题 */
-#console-title, #control-title {
+/** 控制台标题，操作面板标题，监视屏幕标题 */
+#console-title, #control-title ,#screen-title{
     color: white;
     background-color: blue;
     padding: 5px;
@@ -221,4 +221,35 @@ html, body {
     color: white;
     padding: 5px;
     width: 490px;
+}
+/** 监视屏幕 */
+#screen {
+    background-color: rgba(150, 150, 150, 0.3);
+    width: 500px;
+    height: 200px;
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+}
+/** 监视屏幕表格 */
+#gridtable {
+    width: 495px;
+    padding:5px;
+    border-color: #0C0C0C;
+    border-collapse: collapse;
+    color:#FCFCFC ;
+}
+#gridtable caption{
+    border: 1px solid #EE3F3F;
+    padding: 8px;
+    font-weight:bold;
+}
+#gridtable th {
+    border: 1px solid #EE3F3F;
+    padding: 8px;
+}
+#gridtable td {
+    border: 1px solid #EE3F3F;
+    padding: 8px;
 }

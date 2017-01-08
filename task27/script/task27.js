@@ -7,11 +7,31 @@ $ = function(el) {
  * @param colour 颜色
  */
 var consoleText = $("#console-text");
-
+//获取当前的日期时间 格式“yyyy-MM-dd HH:MM:SS”
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    var seconds = date.getSeconds();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    if (seconds >= 0 && seconds <= 9) {
+        seconds = "0" + seconds;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes() + seperator2 + seconds;
+    return currentdate;
+}
+//打印信息
 function log(message, colour) {
     var date = new Date();
     var p = document.createElement("p");
-    p.innerHTML = getTime() + " ";
+    p.innerHTML = getNowFormatDate() + " ";
     var span = document.createElement("span");
     span.innerHTML = message;
     span.style.color = colour;
@@ -24,20 +44,33 @@ function log(message, colour) {
  * 常量：动能系统型号
  * @type {*[]}
  */
-var driverModel = [
-    {model: '前进号', speed: 3, consume: 5},
-    {model: '奔腾号', speed: 5, consume: 7},
-    {model: '超越号', speed: 8, consume: 9}
-];
+var driverModel = [{
+    model: '前进号',
+    speed: 3,
+    consume: 5
+}, {
+    model: '奔腾号',
+    speed: 5,
+    consume: 7
+}, {
+    model: '超越号',
+    speed: 8,
+    consume: 9
+}];
 /**
  * 常量：能源系统型号
  * @type {*[]}
  */
-var energyModel = [
-    {model: '劲量型', rate: 2},
-    {model: '光能型', rate: 3},
-    {model: '永久型', rate: 4}
-];
+var energyModel = [{
+    model: '劲量型',
+    rate: 2
+}, {
+    model: '光能型',
+    rate: 3
+}, {
+    model: '永久型',
+    rate: 4
+}];
 /**
  * 飞船类
  * @param {number} orbitId 所在轨道
@@ -53,7 +86,7 @@ var STOP = 0;
  */
 var START = 1;
 
-function SpaceShip(orbitId,drive,rate) {
+function SpaceShip(orbitId, drive, rate) {
     var obj = {
         //所在轨道
         _orbit: orbitId,
@@ -97,8 +130,6 @@ function SpaceShip(orbitId,drive,rate) {
         energy: {
             add: function() {
                 obj._energy += obj._rate;
-                console.log(obj._rate)
-                console.log(obj._energy)
                 if (obj._energy >= 100) {
                     obj._energy = 100;
                     obj._energyStatus = true;
@@ -106,14 +137,13 @@ function SpaceShip(orbitId,drive,rate) {
             },
             consume: function() {
                 if (obj._status == START) {
-                    obj._energy -= obj._consume;
+                    obj._energy -= (Math.floor(obj._consume / 4));
                 }
                 if (obj._energy <= 0) {
                     obj._status = STOP;
                     obj._energy = 0;
                     obj._energyStatus = false;
                 }
-                
             },
             //获取当前能源值
             get: function() {
@@ -140,9 +170,9 @@ var spaceManager = {
      * 创建宇宙飞船
      * @param orbitId 轨道ID
      */
-    createSpaceShip: function(orbitId,drive,rate) {
+    createSpaceShip: function(orbitId, drive, rate) {
         //创建飞船对象并保存到数组
-        var obj = new SpaceShip(orbitId,drive,rate);
+        var obj = new SpaceShip(orbitId, drive, rate);
         spaceManager.spaceShipList.push(obj);
         // var shipId = spaceManager.spaceShipList.length-1;
         //创建飞船主体div
@@ -172,26 +202,48 @@ var spaceManager = {
         shipControl.appendChild(controlDiv);
 
     },
-    destroy: function(orbit) {
-        for (var i = 0; i < spaceManager.spaceShipList.length; i++) {
-            if (spaceManager.spaceShipList[i]._orbit == orbit) {
-                spaceManager.spaceShipList[i].destroy();
+    action: function(orbit, message) {
+        var random = Math.random();
+        setTimeout(function() {
+            if (random >= 0.1) { //信号发射成功率为90%
+                for (var i = 0; i < spaceManager.spaceShipList.length; i++) {
+                    if (spaceManager.spaceShipList[i]._orbit == orbit) {
+                        switch (message) {
+                            case 'start':
+                                spaceManager.spaceShipList[i].drive.start();
+                                log(spaceManager.spaceShipList[i]._orbit+1+"号飞船开始飞行", "#0FF7D4");
+                                break;
+                            case 'stop':
+                                spaceManager.spaceShipList[i].drive.stop();
+                                log(spaceManager.spaceShipList[i]._orbit+1+"号飞船停止飞行", "#07F007");
+                                break;
+                            case 'destroy':
+                                spaceManager.spaceShipList[i].destroy();
+                                log(spaceManager.spaceShipList[i]._orbit+1+"号飞船成功销毁", "#F9D50A");
+                                //删除飞船操作按钮
+                                $("#shipControl").removeChild(e.target.parentNode);
+                                break;
+                        }
+                    }
+                }
+            } else {
+                switch (message) {
+                    case 'start':
+                        log("起飞指令发送失败,正在重新发送", "#FB2222");
+                        spaceManager.action(orbit, message);
+                        break;
+                    case 'stop':
+                        log("停止指令发送失败,正在重新发送", "#FB2222");
+                        spaceManager.action(orbit, message);
+                        break;
+                    case 'destroy':
+                        log("摧毁指令发送失败,正在重新发送", "#FB2222");
+                        spaceManager.action(orbit, message);
+                        break;
+                }
             }
-        }
-    },
-    start: function(orbit) {
-        for (var i = 0; i < spaceManager.spaceShipList.length; i++) {
-            if (spaceManager.spaceShipList[i]._orbit == orbit) {
-                spaceManager.spaceShipList[i].drive.start();
-            }
-        }
-    },
-    stop: function(orbit) {
-        for (var i = 0; i < spaceManager.spaceShipList.length; i++) {
-            if (spaceManager.spaceShipList[i]._orbit == orbit) {
-                spaceManager.spaceShipList[i].drive.stop();
-            }
-        }
+        }, 300);
+
     }
 };
 
@@ -208,7 +260,7 @@ var spaceManager = {
                 var spaceShipDiv = $("#spaceship" + spaceManager.spaceShipList[i]._orbit);
                 if ($("#spaceship" + spaceManager.spaceShipList[i]._orbit) !== null) {
                     document.body.removeChild($("#spaceship" + spaceManager.spaceShipList[i]._orbit));
-                    spaceManager.spaceShipList.splice(i,1);
+                    spaceManager.spaceShipList.splice(i, 1);
                 }
                 continue;
             }
@@ -239,24 +291,30 @@ var spaceManager = {
 })();
 
 
-//添加点击事件冒泡
+//添加操作飞船点击事件冒泡
 var shipControl = $("#shipControl");
 var buttonClick = function(e) {
     if (e.target && e.target.nodeName.toUpperCase() == "BUTTON") {
+        //获取飞船轨道号
         var orbit = e.target.parentNode.id.slice(7) - 0;
+        //获取指令类型（start，stop，destroy）
         var message = e.target.dataset.type;
-        switch (message) {
-            case 'start':
-                spaceManager.start(orbit);
-                break;
-            case 'stop':
-                spaceManager.stop(orbit);
-                break;
-            case 'destroy':
-                spaceManager.destroy(orbit);
-                //删除飞船操作按钮
-                $("#shipControl").removeChild(e.target.parentNode);
+        //按钮禁用
+        //start
+        if(message=="start"){
+            e.target.nextSibling.disabled=false;
         }
+        //stop
+        if(message=="stop"){
+            e.target.previousSibling.disabled=false;
+        }
+        //destroy
+        if(message=="destroy"){
+            e.target.previousSibling.disabled=true;
+            e.target.previousSibling.previousSibling.disabled=true;
+        }
+        e.target.disabled=true;
+        spaceManager.action(orbit, message);
     }
 };
 shipControl.addEventListener("click", buttonClick);
@@ -271,7 +329,7 @@ function getRadioValue(radionObj) {
     }
     return str;
 }
-//添加点击事件
+//添加创建飞船的点击事件
 var create = $("#create");
 create.addEventListener("click", function() {
     var input = document.getElementsByTagName("input");
@@ -289,53 +347,20 @@ create.addEventListener("click", function() {
     } else {
         return;
     }
-    spaceManager.createSpaceShip(orbit, val[0],val[1]);
+    spaceManager.createSpaceShip(orbit, val[0], val[1]);
 }, false);
 
 /**
  * 操作面板拖动
  */
-(function() {
-    //获取对象元素
+window.onload=function(){
     var control = document.getElementById("control");
-    var title = document.getElementById("control-title");
-    //初始位置
-    control.style.left = 0;
-    control.style.top = 0;
-    var draggingControl = false;
-    var start = [0, 0];
-    var position = [
-        control.style.left.substr(0, control.style.left.length - 2) - 0,
-        control.style.top.substr(0, control.style.top.length - 2) - 0
-    ];
-    //绑定事件
-    title.addEventListener("mousedown", function(e) { //鼠标按下事件
-        start[0] = e.clientX - position[0];
-        start[1] = e.clientY - position[1];
-        draggingControl = true;
-        // console.log(e.clientX,e.clientY)
-    });
-    addEventListener("mouseup", function() { //鼠标抬起事件
-        draggingControl = false;
-    });
-    addEventListener("mousemove", function(e) { //鼠标移动事件
-        if (draggingControl) {
-            position[0] = e.clientX - start[0];
-            position[1] = e.clientY - start[1];
-            if (position[0] > window.innerWidth - control.offsetWidth) {
-                position[0] = window.innerWidth - control.offsetWidth;
-            }
-            if (position[0] < 0) {
-                position[0] = 0;
-            }
-            if (position[1] > window.innerHeight - control.offsetHeight) {
-                position[1] = window.innerHeight - control.offsetHeight;
-            }
-            if (position[1] < 0) {
-                position[1] = 0;
-            }
-            control.style.left = position[0] + "px";
-            control.style.top = position[1] + "px";
-        }
-    });
-})();
+    var controlTitle = document.getElementById("control-title");
+    drag(control,controlTitle);
+    var console = document.getElementById("console");
+    var consoleTitle = document.getElementById("console-title");
+    drag(console,consoleTitle);
+    var screen = document.getElementById("screen");
+    var screenTitle = document.getElementById("screen-title");
+    drag(screen,screenTitle);
+};
