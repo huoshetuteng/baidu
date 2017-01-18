@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="styles/main.css" type="text/css">
+</head>
+<body>
+	<!-- 操作面板 -->
+	<div id="control">
+		<div id="control-title">Control 操作面板</div>
+		<div id="control-main">
+			<div id="powerSelect">
+				<span>动力系统选择</span>
+				<label><input name="power" type="radio" value="0" checked="checked" />前进号(速率30px/s，能耗5%/s)</label>
+				<label><input name="power" type="radio" value="1" />奔腾号(速率50px/s，能耗7%/s)</label>
+				<label><input name="power" type="radio" value="2" />超越号(速率80px/s，能耗9%/s)</label>
+			</div>
+			<div id="energySelect">
+				<span>能源系统选择</span>
+				<label><input name="energy" type="radio" value="0" checked="checked"/>劲量型(补充能源速度2%/s)</label>
+				<label><input name="energy" type="radio" value="1" />光能型(补充能源速度3%/s)</label>
+				<label><input name="energy" type="radio" value="2" />永久型(补充能源速度4%/s)</label>
+			</div>
+			<input type="button" id="create" value="创建飞船">
+			<div id="shipControl">
+			</div>
+		</div>
+	</div>
+	<!-- 控制台 -->
+	<div id="console"><div id="console-title">Console 控制台</div><div id="console-text"></div></div>
+	<!-- 指挥官所在的蓝色星球 -->
+	<div id="commander"></div>
+	<!-- 四条轨道 -->
+	<div id="orbit0" class="orbit"></div>
+	<div id="orbit1" class="orbit"></div>
+	<div id="orbit2" class="orbit"></div>
+	<div id="orbit3" class="orbit"></div>
+	<!-- <script type="text/javascript" src="script/jquery-3.1.0.min.js"></script> -->
+	<script type="text/javascript" src="script/task27.js"></script>
+</body>
+</html>
